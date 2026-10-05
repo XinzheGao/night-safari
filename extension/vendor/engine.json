@@ -1,0 +1,8 @@
+{
+  "name": "Dark Reader",
+  "version": "4.9.133",
+  "source": "https://github.com/darkreader/darkreader",
+  "revision": "c3bee3adce7969d33d537632d2ffa85ca5b9f5ab",
+  "sha256": "f092a15d6d02bf46bad5cb6920e32a4380f226212717e6deb232a37091835c61",
+  "license": "MIT"
+}

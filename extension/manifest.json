@@ -1,16 +1,38 @@
 {
   "manifest_version": 3,
   "name": "Night — 舒适深色",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "优先保留网站原生深色，减少加载闪白，使用 GitHub 风格的舒适暗色。",
-  "permissions": ["storage", "activeTab"],
-  "host_permissions": ["http://*/*", "https://*/*"],
-  "action": { "default_popup": "popup.html", "default_title": "Night" },
-  "content_scripts": [{
-    "matches": ["http://*/*", "https://*/*"],
-    "css": ["preload.css"],
-    "js": ["colors.js", "native-theme.js", "content.js"],
-    "run_at": "document_start",
-    "all_frames": true
-  }]
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Night"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "css": [
+        "preload.css"
+      ],
+      "js": [
+        "vendor/darkreader.js",
+        "colors.js",
+        "native-theme.js",
+        "native-fallback.js",
+        "content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
 }

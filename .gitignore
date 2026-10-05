@@ -1,4 +1,6 @@
 node_modules/
-safari-project/
-test-results/
 .DS_Store
+!extension/vendor/darkreader.js
+test-results/
+safari-project/
+artifacts/

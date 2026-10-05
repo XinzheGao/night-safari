@@ -1,6 +1,6 @@
+@media (prefers-color-scheme: dark) {
 /* A paint shield, not a theme: underlying computed colors stay unchanged.
    CSS timeout releases the shield even if JavaScript fails. */
-html:not([data-night-state])::before,
 html[data-night-state="pending"]::before {
   content: "" !important;
   position: fixed !important;
@@ -15,4 +15,6 @@ html[data-night-state="pending"]::before {
 @keyframes night-shield-release {
   from { visibility: visible; }
   to { visibility: hidden; }
+}
+
 }

@@ -1,6 +1,6 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Night · 网页场景测试</title><link rel="stylesheet" href="site.css"><script src="demo.js" defer></script></head>
 <body><header><strong>Night / 测试台</strong><nav><a href="?case=light">浅色网页</a><a href="?case=native">原生深色</a><a href="?case=delayed">延迟深色</a><a href="?case=mixed">深色页眉</a><a href="?case=transparent">透明背景</a><a href="?case=large">长网页</a></nav></header>
-<main><p class="eyebrow">NIGHT SAFARI · 0.1</p><h1>让夜间阅读舒服一点。</h1><p class="intro">保留网站的原生主题，减少跳转时的闪白，让文字与背景之间有恰到好处的层次。</p><div class="actions"><button id="toggle">切换网站原生主题</button><button id="add">追加一张卡片</button><span id="case"></span></div>
+<main><p class="eyebrow">NIGHT SAFARI · 0.2</p><h1>让夜间阅读舒服一点。</h1><p class="intro">保留网站的原生主题，减少跳转时的闪白，让文字与背景之间有恰到好处的层次。</p><div class="actions"><button id="toggle">切换网站原生主题</button><button id="add">追加一张卡片</button><span id="case"></span></div>
 <section class="grid"><article class="card"><h2>阅读与文字</h2><p>这是一段普通正文。夜间浏览时，页面背景、正文、链接和边框应该保持清晰的层次。</p><p class="muted">这是次级文字，用于补充信息。</p><a href="?case=light">这是一个链接 →</a><p><span class="success">成功状态</span> · <span class="danger">错误状态</span></p></article><article class="card"><h2>表单与代码</h2><label>名称 <input id="name" placeholder="输入内容，检查可读性"></label><textarea placeholder="多行输入"></textarea><select><option>自动识别主题</option><option>使用网站主题</option></select><pre><code>const night = {
   nativeThemeFirst: true,
   neverInvertMedia: true

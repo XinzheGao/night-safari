@@ -1,44 +1,45 @@
-# 验证记录 · 2026-10-04
+# 验证记录 · 0.2.0
 
-## 已完成
+2026-10-05，本地 Dark Reader 4.9.133 API 构建成功，接入 Night 扩展。引擎来源与摘要见 `extension/vendor/engine.json`。
 
-- 5 项 Node.js 颜色测试通过：颜色解析、默认正文/次级文字/链接在三种默认背景上的 4.5:1 对比度、半透明背景合成、红绿状态文字保留，以及链接中的中性文字与白色标签不会被强制改蓝。
-- Safari 27.0.1 临时加载并启用 Night；本地测试站点已授权。
-- B 站首页文字修复后 Reload 并刷新，目视确认顶部导航恢复白色、视频标题恢复浅色、作者信息恢复灰色，“更多”不再显示白色背景块。当前同时启用 Dark Night 和 AdGuard，因此这次观察不能证明扩展独立运行时的完整兼容性。
-- 扩展 JavaScript 语法与 manifest 引用文件检查。
-- 安装脚本的 Bash 语法检查。
+## 已通过
 
-## 尚未完成
+- Node 单元测试：14 项通过，覆盖颜色工具、原生主题候选与 Wikipedia/Bilibili 临时主题标记恢复。
+- Chrome + Playwright 本地网页回归：原生主题自动开启与恢复、浅色页转换、表单对比度、图片/Canvas 不使用反色 filter、动态新增卡片、网站原生主题来回切换。
+- 网站策略 off/native/force、浏览器明暗偏好切换、全局开关、停用后恢复浅色样式、保留用户已有原生深色。
+- 延迟深色、深色页眉与浅色正文混合、透明背景、长网页场景。
+- 页面空闲时观察 1 秒，引擎启用次数不再增加，修复由引擎样式 load 事件产生的反馈循环。
+- 页面无未捕获 JavaScript 错误；转换截图见 `test-results/light-converted.png`，已人工检查正文、表单与媒体区域。
 
-- 浏览器场景测试：已写入 `tests/browser.cjs`，但当前环境没有浏览器运行程序，下载返回无效/不完整压缩包，未能启动。不能据此声称动态网页、原生主题识别和媒体保持原色已经实测通过。
-- Xcode 工程生成与 popup API。
-- Safari 实际首帧、跳转防闪屏录屏；防闪屏效果尚未验证。
-- 真实网站兼容性与长页面性能。
+测试使用真实引擎和 Night 脚本，但存储/消息接口为替身，没有证明扩展权限、popup 消息、隔离环境或 Safari 实际注入行为。
 
-在 Mac 上按 README 的验证表完成第一轮测试后，再补充这些结果。
+## Safari 加载
 
-## Bilibili native adapter (2026-10-04)
-- Inspected the current public laputa-home script index-12fc55c2.js. Native startup reads `theme_style`; the homepage uses `html.bili_dark`.
-- Added an automatic-mode adapter restricted to www.bilibili.com homepage. Writes the native preference and activates the shipped theme class; confirms dark --bg3 before bypassing Night conversion. Off/native/forced conversion choices do not activate the adapter. The preference persists like Bilibili's own switch; disabling Night does not erase it.
-- Reset theme preference to light through Safari console, reloaded the temporary extension, refreshed homepage: preference became dark automatically.
-- Final Safari runtime verification: bili_dark=true, theme_style=dark, data-night-state=native, night-engine stylesheet length=0, --bg3=#0A0B0C. No menu clicks during automatic activation test.
-- Dark Night and AdGuard remain enabled; flicker and other Bilibili pages are not independently validated.
+通过 Safari → Developer → Add Temporary Extension 加载本项目 `extension/`，Extensions 设置已显示 Night 0.2.0。旧版 Night 0.1.0 仍在扩展列表中，需要测试时停用旧版，避免多个深色扩展同时转换。这里只确认 Safari 识别并加载了扩展，没有证明新引擎在 Safari 网页中的运行效果。
 
-## Generic native-theme activation (2026-10-04)
-- Added native-theme.js before content.js in the manifest. Discovers common root class/attribute switches from readable active site CSS; ignores Night engine CSS, inaccessible styles, inactive media, and component names such as dark-widget.
-- Checks rendered dark coverage/contrast with Night rules disabled in the same task. Failed attempts roll back; attempted candidates are remembered to prevent mutation feedback loops. Generic markers are reversible and not persisted in website storage.
-- npm test: 9 passing tests including discovery, rollback, preservation of unrelated classes, inaccessible CSS and inactive media.
-- Headless browser regression passed using installed Chrome and bundled Playwright: native auto activation, empty engine, off restores light, re-enable, ordinary light conversion, forms/media, dynamic DOM, manual native toggle, off/native/force, native/delayed/mixed/transparent/large pages, stable observer and no page errors.
-- Reloaded temporary Night extension in Safari and refreshed current LocalSend tab. Its native theme mechanism was not inspected or independently verified; Chrome fixture results do not prove Safari first-paint or other-extension compatibility.
-- Limitations: only common CSS root switches; script-only themes and unreadable cross-origin styles need site adapters. Synchronous confirmation may reject themes with transitions. Existing Bilibili homepage adapter retained.
+## 仍需实测
 
-## Wikipedia adapter (2026-10-04)
-- Safari showed Chinese Wikipedia Vector appearance controls with light selected. Inspected public HTML and skins.vector.clientPreferences module: root skin-theme-clientpref-night; radio id skin-client-pref-skin-theme-value-night; its change handler applies native classes and saves through MediaWiki's native preference API (cookie for anonymous users).
-- Automatic mode now dispatches change on that exact native control on wikipedia.org hosts. It honors disabled controls and off/native/force modes, limits unready-handler retries, and restores checked state after unsuccessful attempts. No direct account API or guessed storage writes.
-- 12 unit tests passed, including native-handler activation, idempotence, host/mode restrictions and unready-handler rollback. Syntax check passed.
-- Safari computer-use calls repeatedly timed out during inspection. Modified extension has NOT been reloaded in Safari and current Wikipedia page success is NOT confirmed. Native render confirmation still uses visible coverage/contrast; if homepage native styling is incomplete Night may continue conversion.
+- Safari 真实网页权限、引擎注入与 popup 操作。
+- Bilibili/Wikipedia 真实站点在新引擎版本中的原生主题与切换。单元测试不是在线网站验证。
+- Safari 页面加载、跨站跳转、前进后退和刷新时的闪白；需录屏逐帧检查。
+- CSP 严格网站、跨域样式和图片、iframe、shadow DOM、adopted stylesheets、CSSOM 动态更新、登录保护资源。
+- 频繁 DOM 变化网站的重建成本与长时间内存占用。
 
-### Safari Wikipedia follow-up
-- Reconnected Safari by bundle id after initial timeout; reloaded temporary Night through Extensions settings and refreshed Wikipedia.
-- Runtime console confirmed skin-theme-clientpref-night, data-night-state=native, night-engine text length=0, native night radio checked=true. Accessibility confirmed light=0 and dark=1. This supersedes the earlier unverified reload note.
-- User UI activity interrupted the additional refresh-persistence check; no claim of independent first-paint or other-extension compatibility.
+本机缺少 Playwright WebKit 浏览器可执行文件，因此 WebKit 回归未运行；没有以 Chrome 结果代替 Safari 验证。
+
+## 稳定性与打包回归 · 2026-10-05
+
+- 普通元素 class/style、20 张动态卡片及 resize 不触发引擎重启，新增卡片仍转换为深色。根主题切换仍能在原生与转换间切换。
+- 强制模式在根主题变化时保持引擎运行。全局停用及网站停用在页面初始化期间不进入 pending，不显示加载遮罩。
+- Node 14 项测试、Dark Reader 上游 75 项单元测试、本地 Chrome 网页回归通过。
+- `npm run package` 核验引擎 SHA-256、manifest 引用与 JSON 文件，生成 ZIP 并通过解压完整性检查。已修正本地引擎被父目录 Git 规则忽略的问题。
+- 本轮 Safari UI 操作被工具连续提示用户正在操作窗口而中止，未 Reload 或验证新版扩展；Safari 项目路径、真实 popup 与开关恢复仍待验证。
+
+## Safari 实际扩展检查 · 2026-10-05
+
+- Safari 设置确认新版 Night 0.2.0 在 Personal 启用、旧版 Night 停用；执行了 Reload。Show in Finder 显示 night 下的 extension 目录。
+- 真实 popup 能显示当前 host 与内容脚本状态；example.com 报告原生深色，本地 127.0.0.1:8765 浅色演示页报告已转换。
+- 在真实演示页追加卡片并输入 Safari 验证，页面内容与输入正常，popup 继续报告转换。随后浏览器外观变浅，popup 报告保留网站主题，截图确认恢复浅色页面。没有通过脚本测量 Safari 对比度或重建次数。
+- Reload 后设置仍记录 TypeError: Load failed (vendor/darkreader.js:357:30)。该位置为引擎资源请求失败后的 catch 日志，不能认定整个引擎崩溃；失败 URL 未定位。
+- Safari popup 的策略控件自动化操作多次仅关闭弹窗，未成功完成网站策略、全局开关与刷新持久化验收。这些项目继续列为待测。
+- 测试期间临时停用 Dark Night，之后重新启用，并在 School 的 Extensions 面板关闭其开关，恢复仅 Personal 启用的原配置。

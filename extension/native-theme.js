@@ -42,7 +42,7 @@
         }
       }
       for (const sheet of doc.styleSheets) {
-        if (sheet.disabled || sheet.ownerNode?.id === 'night-engine') continue;
+        if (sheet.disabled || (sheet.ownerNode?.id === 'night-engine' || sheet.ownerNode?.classList?.contains('darkreader'))) continue;
         if (sheet.media?.mediaText && !mediaMatches(sheet.media.mediaText)) continue;
         try { walk(sheet.cssRules); } catch { /* Cross-origin styles are not readable. */ }
       }
